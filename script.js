@@ -153,8 +153,8 @@ function placeInitialPieces() {
     { type: 'tiger', positions: [ [2,0], [5,0] ] },
     { type: 'cat', positions: [ [1,0], [4,0] ] },
     { type: 'snake', positions: [ [1,1], [5,1] ] },
-    { type: 'dog', positions: [ [4,1] ] },
-    { type: 'rat', positions: [ [0,1], [2,1], [3,1], [6,1] ] },
+    { type: 'dog', positions: [ [2,3], [4,3] ] },
+    { type: 'rat', positions: [ [0,2], [3,2], [6,2] ] },
     { type: 'tree', positions: [ [3,0] ] }
   ];
 
