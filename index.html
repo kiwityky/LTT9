@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kỳ Thú – Hồn Việt demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section id="board-container">
+      <div id="board" aria-label="Bàn cờ Kỳ Thú"></div>
+    </section>
+    <aside id="sidebar">
+      <h1>KỲ THÚ – HỒN VIỆT</h1>
+      <div class="status">Lượt hiện tại: <span id="current-player">Quân Đỏ</span></div>
+      <div class="info">
+        <h2>Thông tin quân</h2>
+        <p id="piece-info">Chọn một quân để xem mô tả.</p>
+      </div>
+      <div class="controls">
+        <button id="answer-correct">Trả lời đúng</button>
+        <button id="answer-wrong">Trả lời sai / Bỏ lượt</button>
+        <button id="reset">Ván mới</button>
+      </div>
+      <div class="log">
+        <h2>Nhật ký</h2>
+        <ul id="log-list"></ul>
+      </div>
+      <div id="message" aria-live="polite"></div>
+    </aside>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
