@@ -4,6 +4,46 @@ const COLS = 9;
 const PLAYER_RED = 'red';
 const PLAYER_GREEN = 'green';
 
+const FREE_CELLS = new Set([
+  1, 2, 3, 4, 5, 6, 7, 9,
+  13, 15, 19,
+  21, 24, 26,
+  31, 33, 36, 39,
+  42, 44, 48,
+  50, 51, 52, 53, 54, 55, 56
+]);
+
+const CELL_QUESTIONS = {
+  8: { question: 'Lá cờ Tổ quốc Việt Nam có hình gì ở giữa?', answers: ['Ngôi sao vàng 5 cánh', 'ngoi sao vang 5 canh', 'ngoi sao vang'] },
+  10: { question: 'Cơ quan quản lý ở cấp xã/phường được gọi là gì?', answers: ['Ủy ban nhân dân', 'uy ban nhan dan'] },
+  11: { question: 'Tên gọi của cuộc chiến đấu bảo vệ Tổ quốc chống Pháp (1945-1954)?', answers: ['Chiến tranh Đông Dương', 'chien tranh dong duong'] },
+  12: { question: 'Triều đại nào trị vì lâu đời nhất trong Việt Nam?', answers: ['Triều Hậu Lê', 'trieu hau le', 'hau le'] },
+  14: { question: 'Tên gọi của lực lượng quân đội Việt Nam hiện nay?', answers: ['Quân đội nhân dân Việt Nam', 'quan doi nhan dan viet nam'] },
+  16: { question: 'Ở Việt Nam bao nhiêu tuổi được phép đi bầu cử?', answers: ['18', 'mười tám', 'muoi tam'] },
+  17: { question: 'Chủ tịch đầu tiên của nước Việt Nam Dân chủ Cộng hòa là ai?', answers: ['Quân đội nhân dân Việt Nam', 'quan doi nhan dan viet nam'] },
+  18: { question: 'Hai Bà Trưng đặt kinh đô ở đâu?', answers: ['Mê Linh', 'me linh'] },
+  20: { question: 'Các nước trên thế giới gọi Việt Nam là gì (tên chính thức)?', answers: ['Cộng hòa xã hội chủ nghĩa Việt Nam', 'cong hoa xa hoi chu nghia viet nam'] },
+  22: { question: 'Đền Hùng thờ ai?', answers: ['Các Vua Hùng', 'cac vua hung', 'vua hung'] },
+  23: { question: 'Thành phố nào là thủ đô của Việt Nam?', answers: ['Hà Nội', 'ha noi'] },
+  25: { question: 'Ngân hàng Nhà nước Việt Nam do cơ quan nào quản lý?', answers: ['Chính phủ', 'chinh phu'] },
+  27: { question: 'Tổ chức-xã hội nào là lực lượng nòng cốt của tuổi trẻ Việt Nam?', answers: ['Đoàn Thanh niên', 'doan thanh nien'] },
+  28: { question: 'Ai là người đã đánh tan quân Thanh vào năm 1789?', answers: ['Quang Trung', 'Nguyễn Huệ', 'nguyen hue', 'quang trung (nguyen hue)'] },
+  29: { question: 'Vị vua đầu tiên lập nên nước Văn Lang là ai?', answers: ['Hùng Vương', 'hung vuong'] },
+  30: { question: 'Hai Bà Trưng đã làm gì để chống lại nhà Hán?', answers: ['Khởi nghĩa', 'khoi nghia', 'khởi nghĩa chống giặc ngoại xâm', 'khoi nghia chong giac ngoai xam'] },
+  32: { question: 'Vị anh hùng nào có công đánh tan quân Nguyên Mông lần thứ ba?', answers: ['Trần Hưng Đạo', 'tran hung dao'] },
+  34: { question: 'Thành phố lớn nhất của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam là thành phố nào?', answers: ['Thành phố Hồ Chí Minh', 'thanh pho ho chi minh', 'tphcm', 'tp ho chi minh'] },
+  35: { question: 'Ngày Quốc Khánh của nước ta là ngày nào?', answers: ['2/9', '02/09', '2-9', 'ngay 2 thang 9'] },
+  37: { question: 'Hiện tại chức vụ nào là người đứng đầu Chính phủ Việt Nam?', answers: ['Thủ tướng', 'thu tuong'] },
+  38: { question: 'Công dân Việt Nam có quyền và nghĩa vụ được ghi trong văn bản luật nào?', answers: ['Hiến pháp', 'hien phap'] },
+  40: { question: 'Cuộc kháng chiến chống Mỹ kết thúc bằng sự kiện nào vào năm 1975?', answers: ['Giải phóng miền Nam', 'Thống nhất đất nước', 'giai phong mien nam', 'thong nhat dat nuoc'] },
+  41: { question: 'Vua Quang Trung tên thật là gì?', answers: ['Nguyễn Huệ', 'Hồ Thơm', 'nguyen hue', 'ho thom', 'nguyen hue (ho thom)'] },
+  43: { question: 'Tên gọi của cuộc cải cách mở đầu cho công cuộc Đổi Mới năm 1986?', answers: ['Đổi Mới', 'doi moi'] },
+  45: { question: 'Lăng Chủ tịch Hồ Chí Minh nằm ở đâu?', answers: ['Hà Nội', 'ha noi'] },
+  46: { question: 'Ai là người đã có công lớn trong việc tạo ra chữ Quốc ngữ?', answers: ['Alexandre de Rhodes', 'alexandre derhodes', 'alexandre rhodes'] },
+  47: { question: 'Bác Hồ tên thật là gì (khi còn nhỏ)?', answers: ['Nguyễn Sinh Cung', 'nguyen sinh cung'] },
+  49: { question: 'Ai là người đã chỉ huy trận Bạch Đằng năm 938?', answers: ['Ngô Quyền', 'ngo quyen'] },
+};
+
 // Board cell types for quick lookup
 const CELL_TYPES = {
   river: 'river',
@@ -51,9 +91,9 @@ let board = [];
 let currentPlayer = PLAYER_RED;
 let selected = null; // {row, col}
 let legalMoves = [];
-let canMoveThisTurn = false;
 let moveCounterWithoutCapture = 0;
 let gameOver = false;
+let unlockedCells = new Set(FREE_CELLS);
 
 const boardEl = document.getElementById('board');
 const currentPlayerEl = document.getElementById('current-player');
@@ -93,15 +133,15 @@ function initBoard() {
 
   placeInitialPieces();
   currentPlayer = PLAYER_RED;
-  canMoveThisTurn = false;
   selected = null;
   legalMoves = [];
   moveCounterWithoutCapture = 0;
   gameOver = false;
+  unlockedCells = new Set(FREE_CELLS);
   renderBoard();
   updateStatus();
   clearLog();
-  setMessage('Bấm "Trả lời đúng" để được đi quân.');
+  setMessage('Chọn quân và ô đích. Ô có câu hỏi cần trả lời đúng để mở vĩnh viễn.');
 }
 
 // Place symmetric starting pieces
@@ -189,6 +229,48 @@ function getCellOrderNumber(row, col) {
   return startNumber + (ROWS - 1 - row); // bottom-to-top
 }
 
+function normalizeAnswer(text) {
+  return (text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function requiresQuestion(orderNumber) {
+  if (orderNumber === null) return false;
+  if (FREE_CELLS.has(orderNumber)) return false;
+  return Boolean(CELL_QUESTIONS[orderNumber]);
+}
+
+function ensureCellUnlocked(orderNumber) {
+  if (!requiresQuestion(orderNumber)) return true;
+  if (unlockedCells.has(orderNumber)) return true;
+
+  const qa = CELL_QUESTIONS[orderNumber];
+  const response = prompt(`Ô số ${orderNumber}: ${qa.question}`);
+
+  if (response === null) {
+    setMessage('Bạn đã hủy trả lời. Nước đi không được thực hiện.');
+    return false;
+  }
+
+  const normalized = normalizeAnswer(response);
+  if (qa.answers.some(ans => normalizeAnswer(ans) === normalized)) {
+    unlockedCells.add(orderNumber);
+    setMessage(`Trả lời đúng! Ô ${orderNumber} đã được mở vĩnh viễn. Hoàn tất nước đi.`);
+    return true;
+  }
+
+  setMessage('Câu trả lời chưa đúng, bạn mất lượt.');
+  selected = null;
+  legalMoves = [];
+  renderBoard();
+  switchPlayer();
+  return false;
+}
+
 function pieceName(piece) {
   const map = {
     tree: 'Cây Cổ Thụ',
@@ -213,9 +295,13 @@ function handleCellClick(row, col) {
   }
 
   // Move attempt
-  if (selected && canMoveThisTurn) {
+  if (selected) {
     const target = legalMoves.find(m => m.row === row && m.col === col);
     if (target) {
+      const orderNumber = getCellOrderNumber(row, col);
+      if (!ensureCellUnlocked(orderNumber)) {
+        return;
+      }
       movePiece(selected, { row, col });
     } else {
       setMessage('Ô đến không hợp lệ cho quân đã chọn.');
@@ -496,7 +582,6 @@ function movePiece(from, to) {
   logMove(piece, from, to, captureText);
   selected = null;
   legalMoves = [];
-  canMoveThisTurn = false;
 
   if (checkWinCondition()) {
     renderBoard();
@@ -529,7 +614,7 @@ function clearLog() {
 function switchPlayer() {
   currentPlayer = currentPlayer === PLAYER_RED ? PLAYER_GREEN : PLAYER_RED;
   updateStatus();
-  setMessage('Bấm "Trả lời đúng" để được đi quân.');
+  setMessage('Đến lượt bạn: hãy chọn quân, chọn ô đích và trả lời câu hỏi nếu được yêu cầu.');
 }
 
 function updateStatus() {
@@ -545,17 +630,15 @@ function setMessage(msg) {
 function setupControls() {
   document.getElementById('answer-correct').addEventListener('click', () => {
     if (gameOver) return;
-    canMoveThisTurn = true;
-    setMessage('Bạn được phép chọn quân và đi.');
+    setMessage('Chọn ô đích, nếu ô có câu hỏi hãy trả lời để mở ô.');
   });
 
   document.getElementById('answer-wrong').addEventListener('click', () => {
     if (gameOver) return;
-    canMoveThisTurn = false;
     selected = null;
     legalMoves = [];
     renderBoard();
-    setMessage('Trả lời sai, chuyển lượt đối phương.');
+    setMessage('Bạn đã bỏ lượt. Chuyển sang đối phương.');
     switchPlayer();
   });
 
