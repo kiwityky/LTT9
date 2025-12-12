@@ -57,8 +57,9 @@ body {
 }
 
 #board {
-  width: min(92vw, 810px);
+  width: min(92vw, 810px, calc((100vh - 180px) * 9 / 7));
   aspect-ratio: 9 / 7;
+  max-height: calc(100vh - 180px);
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(7, 1fr);
@@ -329,7 +330,8 @@ body {
     order: 1;
   }
   #board {
-    width: min(96vw, 720px);
+    width: min(96vw, 720px, calc((100vh - 160px) * 9 / 7));
+    max-height: calc(100vh - 160px);
   }
   #sidebar {
     order: 2;
@@ -355,7 +357,8 @@ body {
     padding: 8px;
   }
   #board {
-    width: 100%;
+    width: min(100%, calc((100vh - 140px) * 9 / 7));
+    max-height: calc(100vh - 140px);
     gap: 3px;
   }
   .cell {
