@@ -54,16 +54,22 @@ const CELL_TYPES = {
   normal: 'normal'
 };
 
-// Piece symbols for rendering
-const PIECE_SYMBOL = {
-  tree: 'T',
-  elephant: 'V',
-  tiger: 'H',
-  cat: 'M',
-  snake: 'R',
-  dog: 'C',
-  rat: 'U'
+// Piece images for rendering
+const PIECE_ASSET = {
+  tree: 'thu',
+  elephant: 'voi',
+  tiger: 'ho',
+  cat: 'meo',
+  snake: 'ran',
+  dog: 'cho',
+  rat: 'chuot'
 };
+
+function getPieceImage(piece) {
+  const base = PIECE_ASSET[piece.type];
+  const colorSuffix = piece.color === PLAYER_RED ? 'do' : 'xanh';
+  return `img/${base}-${colorSuffix}.png`;
+}
 
 // Capture permission per piece type
 const CAPTURE_RULES = {
@@ -82,8 +88,8 @@ const PIECE_INFO = {
   elephant: 'Voi: đi 1-2 ô thẳng hoặc chéo, không bị chặn giữa, qua sông bằng cầu.',
   tiger: 'Hổ: đi chéo 1-2 ô, không qua sông.',
   cat: 'Mèo: đi 1 ô lên/xuống/trái/phải, chỉ qua sông bằng cầu.',
-  snake: 'Rắn: đi 2 ô thẳng, có thể bơi qua sông, không bị chặn giữa.',
-  dog: 'Chó: đi 2 ô 8 hướng, đường thẳng có thể bơi qua sông, không chéo qua sông.',
+  snake: 'Rắn: đi tới – lui, trái – phải 1 hoặc 2 ô, không đi chéo; bước 2 không bị cản giữa.',
+  dog: 'Chó: đi tới – lui, trái – phải hoặc chéo 1–2 ô; không được qua sông bằng đường chéo.',
   rat: 'Chuột: đi 1 ô tiến hoặc ngang, không lùi, qua sông bằng cầu, có phong cấp.'
 };
 
@@ -210,8 +216,14 @@ function renderBoard() {
       if (piece) {
         const pieceEl = document.createElement('div');
         pieceEl.className = `piece ${piece.color}`;
-        pieceEl.textContent = PIECE_SYMBOL[piece.type];
         pieceEl.title = `${pieceName(piece)} ${piece.color === PLAYER_RED ? 'đỏ' : 'xanh'}`;
+
+        const img = document.createElement('img');
+        img.src = getPieceImage(piece);
+        img.alt = pieceName(piece);
+        img.className = 'piece__icon';
+
+        pieceEl.appendChild(img);
         cell.appendChild(pieceEl);
       }
 
@@ -410,24 +422,28 @@ function getLegalMoves(piece, position) {
       break;
     }
     case 'snake': {
-      directions.orthogonal.forEach(([dr, dc]) => {
-        const nr = row + dr * 2;
-        const nc = col + dc * 2;
-        if (!inBounds(nr, nc)) return;
-        if (board[row + dr][col + dc].piece) return;
-        addMoveIfValid(nr, nc);
+      [1, 2].forEach(step => {
+        directions.orthogonal.forEach(([dr, dc]) => {
+          const nr = row + dr * step;
+          const nc = col + dc * step;
+          if (!inBounds(nr, nc)) return;
+          if (step === 2 && board[row + dr][col + dc].piece) return;
+          addMoveIfValid(nr, nc);
+        });
       });
       break;
     }
     case 'dog': {
-      [...directions.orthogonal, ...directions.diagonal].forEach(([dr, dc]) => {
-        const nr = row + dr * 2;
-        const nc = col + dc * 2;
-        if (!inBounds(nr, nc)) return;
-        if (board[row + dr][col + dc].piece) return;
-        // chéo không được bơi sông
-        if (dr !== 0 && dc !== 0 && pathCrossRiver({ row, col }, { row: nr, col: nc })) return;
-        addMoveIfValid(nr, nc);
+      [1, 2].forEach(step => {
+        [...directions.orthogonal, ...directions.diagonal].forEach(([dr, dc]) => {
+          const nr = row + dr * step;
+          const nc = col + dc * step;
+          if (!inBounds(nr, nc)) return;
+          if (step === 2 && board[row + dr][col + dc].piece) return;
+          // Không được qua sông bằng đường chéo
+          if (dr !== 0 && dc !== 0 && pathCrossRiver({ row, col }, { row: nr, col: nc })) return;
+          addMoveIfValid(nr, nc);
+        });
       });
       break;
     }
