@@ -486,7 +486,8 @@ function pathRespectRiver(start, end, steps, dr, dc, onlyBridge) {
   for (let i = 1; i <= steps; i++) {
     r += dr;
     c += dc;
-    if (isRiver(r, c) && onlyBridge && !isBridge(r, c)) return false;
+    // Cột E bị cấm đứng, việc đi qua không cần kiểm tra cầu
+    if (c === 4 && i === steps) return false;
   }
   return true;
 }
@@ -494,6 +495,8 @@ function pathRespectRiver(start, end, steps, dr, dc, onlyBridge) {
 // Cell validation shared by pieces
 function canEnterCell(piece, r, c) {
   if (!inBounds(r, c)) return false;
+  // Không quân nào được đứng ở cột E
+  if (c === 4) return false;
   // Tree restricted to fortress
   if (piece.type === 'tree' && !isFortress(piece.color, r, c)) return false;
   // Tiger cannot stand on river
