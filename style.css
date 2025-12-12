@@ -28,10 +28,12 @@ body {
 
 .app {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(0, 5fr) minmax(280px, 2fr);
   min-height: 100vh;
   gap: 16px;
   padding: 16px;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
 #board-container {
@@ -46,6 +48,18 @@ body {
   overflow: hidden;
 }
 
+#board-container::before {
+  content: "";
+  position: absolute;
+  inset: 6% 4%;
+  background: url("img/Logo.jpg") center/contain no-repeat;
+  opacity: 0.08;
+  transform: rotate(-5deg);
+  filter: saturate(0.7);
+  pointer-events: none;
+  z-index: 0;
+}
+
 #board-container::after {
   content: '';
   position: absolute;
@@ -57,9 +71,9 @@ body {
 }
 
 #board {
-  width: min(92vw, 810px, calc((100vh - 180px) * 9 / 7));
+  width: min(96vw, 1100px, calc((100vh - 140px) * 9 / 7));
   aspect-ratio: 9 / 7;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 140px);
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(7, 1fr);
